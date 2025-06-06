@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>メンヘラ彼女回避ゲーム</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- スタート画面 -->
+    <div id="startScreen" class="screen">
+      <img src="images/menhera1.png" class="hero-img" />
+      <h1 class="game-title">メンヘラ彼女</h1>
+      <button onclick="startGame()">スタート</button>
+      <button onclick="showDescription()">説明</button>
+    </div>
+
+    <!-- 説明画面 -->
+    <div id="descriptionScreen" class="screen" style="display: none">
+      <p>
+        彼女の怒りをなだめながらエンドを目指そう。病み度100でゲームオーバー。
+      </p>
+      <button onclick="backToStart()">戻る</button>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="gameScreen" class="screen" style="display: none">
+      <img id="bg" src="images/room.jpg" class="bg-img" />
+      <img id="hero" src="images/menhera1.png" class="hero-img" />
+
+      <div id="endListBtn" onclick="toggleEndList()">エンド一覧</div>
+
+      <div id="textBox">
+        <p id="dialogue">ここにセリフが表示されます。</p>
+      </div>
+
+      <div id="choices"></div>
+
+      <div id="yamiMeter">病み度：0%</div>
+
+      <!-- エンド一覧 -->
+      <div id="endList" style="display: none">
+        <h3>エンド一覧</h3>
+        <ul id="endItems"></ul>
+      </div>
+    </div>
+
+    <!-- エンド画面 -->
+    <div id="endScreen" class="screen" style="display: none">
+      <div class="overlay"></div>
+      <div class="end-text-center" id="endType">YOU DEAD</div>
+      <div class="end-text-corner" id="endName">ゲームオーバー</div>
+      <button onclick="retryGame()">リトライ</button>
+      <button onclick="backToStart()">終了</button>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
