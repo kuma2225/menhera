@@ -1,171 +1,172 @@
-let yami = 0;
-let current = 0;
-let unlockedEnds = JSON.parse(localStorage.getItem("unlockedEnds")) || [];
+const startBtn = document.getElementById('startBtn');
+const infoBtn = document.getElementById('infoBtn');
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const endScreen = document.getElementById('endScreen');
+const endListScreen = document.getElementById('endListScreen');
+const meter = document.getElementById('meter');
+const girl = document.getElementById('girl');
+const message = document.getElementById('message');
+const choices = document.getElementById('choices');
+const retryBtn = document.getElementById('retryBtn');
+const exitBtn = document.getElementById('exitBtn');
+const endListBtn = document.getElementById('endListBtn');
+const closeEndList = document.getElementById('closeEndList');
+const endType = document.getElementById('endType');
+const endName = document.getElementById('endName');
+const infoScreen = document.getElementById("infoScreen");
+const backBtn = document.getElementById("backBtn");
 
-const questions = [
-  {
-    text: "昨日の女、誰？",
-    choices: [
-      { text: "妹だよ！", yami: -10 },
-      { text: "ただの友達だって", yami: 10 },
-      { text: "うるさいな…", yami: 100 }
-    ]
-  },
-  {
-    text: "この前既読スルーしたよね？",
-    choices: [
-      { text: "寝てた", yami: 0 },
-      { text: "忘れてた", yami: 20 },
-      { text: "気分じゃなかった", yami: 100 }
-    ]
-  }
-];
 
-const ends = [
-  { id: "dead", name: "ゲームオーバー", condition: () => yami > 100, label: "YOU DEAD" },
-  { id: "clear", name: "ハッピーエンド", condition: () => current >= questions.length && yami <= 50, label: "クリア" },
-  { id: "clear2", name: "妥協エンド", condition: () => current >= questions.length && yami <= 100, label: "クリア？" }
-];
+let yamido = 30;
+let seenEnds = [false, false, false]; // 0:YOU DEAD, 1:CLEAR, 2:CLEAR?
 
 function startGame() {
-  yami = 0;
-  current = 0;
-  updateHeroImage();
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("descriptionScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
-  document.getElementById("endScreen").style.display = "none";
-  showQuestion();
-  updateYamiMeter();
-  updateEndList();
+  startScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+  yamido = 30;
+  updateMeter();
+  showMessage("ねぇ、昨日どこに行ってたの？", [
+    { text: "友達と飲みに…", delta: 30 },
+    { text: "バイトだったよ", delta: -10 },
+    { text: "言う必要ある？", delta: 80 }
+  ]);
 }
 
-function showDescription() {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("descriptionScreen").style.display = "block";
-}
+function showMessage(text, options) {
+  message.textContent = "";
+  let i = 0;
+  let interval = setInterval(() => {
+    message.textContent += text[i];
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 30);
 
-function backToStart() {
-  document.getElementById("startScreen").style.display = "block";
-  document.getElementById("descriptionScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("endScreen").style.display = "none";
-}
+  choices.innerHTML = "";
 
-function showQuestion() {
-  if (current >= questions.length) {
-    checkEnding();
-    return;
-  }
-  const q = questions[current];
-  document.getElementById("dialogue").innerText = q.text;
-  const choicesDiv = document.getElementById("choices");
-  choicesDiv.innerHTML = "";
-  q.choices.forEach(c => {
-    const btn = document.createElement("button");
-    btn.textContent = c.text;
+  options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.textContent = opt.text;
+    btn.classList.add('choiceBtn');
+
+    // 3つ選択肢の時だけ、上下のスペースを開けるためクラス付与
+    if (options.length === 3) {
+      if (idx === 0) btn.style.marginTop = '0';   // 一番上は余白なし
+      if (idx === 1) btn.style.marginTop = 'auto'; // 真ん中は自動マージンで間を広げる
+      if (idx === 2) btn.style.marginTop = 'auto'; // 下もautoで間隔維持
+    }
+
     btn.onclick = () => {
-      yami += c.yami;
-      current++;
-      updateYamiMeter();
-      updateHeroImage();
-      showQuestion();
+      yamido += opt.delta;
+      yamido = Math.max(0, yamido);
+      updateMeter();
+      checkEnd();
     };
-    choicesDiv.appendChild(btn);
+    choices.appendChild(btn);
   });
-}
 
-function updateYamiMeter() {
-  const meter = document.getElementById("yamiMeter");
-  meter.innerText = `病み度：${yami}%`;
-  if (yami < 50) {
-    meter.style.color = "lightgreen";
-  } else if (yami < 80) {
-    meter.style.color = "yellow";
+  // 2つのときは上から詰める（flex-start）に変更
+  if (options.length === 2) {
+    choices.style.justifyContent = 'flex-start';
   } else {
-    meter.style.color = "red";
+    choices.style.justifyContent = 'space-between';
   }
 }
 
-function updateHeroImage() {
-  const hero = document.getElementById("hero");
-  if (yami < 50) {
-    hero.src = "images/menhera1.png";
-  } else if (yami < 80) {
-    hero.src = "images/menhera2.png";
+function updateMeter() {
+  let percent = Math.min(yamido, 100);
+  meter.style.height = percent + "%";
+  if (yamido < 50) {
+    meter.style.background = "green";
+    girl.src = "images/menhera1.png";
+  } else if (yamido < 80) {
+    meter.style.background = "yellow";
+    girl.src = "images/menhera2.png";
   } else {
-    hero.src = "images/menhera3.png";
+    meter.style.background = "red";
+    girl.src = "images/menhera3.png";
   }
 }
 
-function checkEnding() {
-  for (let end of ends) {
-    if (end.condition()) {
-      showEnd(end.id, end.name, end.label);
-      return;
+
+function checkEnd() {
+  if (yamido > 100) {
+    setTimeout(() => {
+      showEnd("YOU DEAD", "殺された", 0);
+    }, 650);
+  } else {
+    if (yamido < 20) {
+      setTimeout(() => {
+        showEnd("CLEAR", "うまく言い訳できた", 1);
+      }, 650);
+    } else if (yamido < 60) {
+      setTimeout(() => {
+        showEnd("CLEAR？", "なんとかごまかせた…", 2);
+      }, 650);
+    } else {
+      showMessage("……本当に？", [
+        { text: "もちろん", delta: -20 },
+        { text: "違うかも", delta: 40 }
+      ]);
     }
   }
 }
 
-function showEnd(id, name, label) {
-  if (!unlockedEnds.includes(id)) {
-    unlockedEnds.push(id);
-    localStorage.setItem("unlockedEnds", JSON.stringify(unlockedEnds));
-  }
 
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("endScreen").style.display = "block";
-  document.getElementById("endName").innerText = name;
-  document.getElementById("endType").innerText = label;
-  updateEndList();
+function showEnd(type, name, id) {
+  gameScreen.classList.add('hidden');
+  endScreen.classList.remove('hidden');
+  endType.textContent = type;
+  endName.textContent = name;
+  seenEnds[id] = true;
 }
 
-function retryGame() {
-  startGame();
-}
+startBtn.onclick = startGame;
 
-function toggleEndList() {
-  const list = document.getElementById("endList");
-  list.style.display = list.style.display === "none" ? "block" : "none";
-}
-
-function updateEndList() {
-  const ul = document.getElementById("endItems");
-  ul.innerHTML = "";
-  ends.forEach(end => {
-    const li = document.createElement("li");
-    li.textContent = unlockedEnds.includes(end.id) ? end.name : "？？？？";
-    ul.appendChild(li);
-  });
-}
-// 見たエンドを記録する配列
-let seenEndings = {
-  bad: false,
-  clear: false,
-  clear2: false
+retryBtn.onclick = () => {
+  endScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+  yamido = 30;
+  updateMeter();
+  showMessage("ねぇ、昨日どこに行ってたの？", [
+    { text: "友達と飲みに…", delta: 30 },
+    { text: "バイトだったよ", delta: -10 },
+    { text: "言う必要ある？", delta: 80 }
+  ]);
 };
 
-// エンド一覧を更新
+exitBtn.onclick = () => {
+  endScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+  seenEnds = [false, false, false];
+};
+
+endListBtn.onclick = () => {
+  gameScreen.classList.add('hidden');
+  endListScreen.classList.remove('hidden');
+  updateEndList();
+};
+
+closeEndList.onclick = () => {
+  endListScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+};
+
+// 説明ボタンが押されたとき
+infoBtn.addEventListener("click", () => {
+  startScreen.classList.add("hidden");
+  infoScreen.classList.remove("hidden");
+});
+
+// 戻るボタンの処理（説明 → スタートに戻る）
+backBtn.addEventListener("click", () => {
+  infoScreen.classList.add("hidden");
+  startScreen.classList.remove("hidden");
+});
+
 function updateEndList() {
-  const list = document.getElementById('endList');
-  list.innerHTML = `
-    1. ${seenEndings.bad ? 'YOU DEAD' : '？？？？'}<br>
-    2. ${seenEndings.clear ? 'クリア' : '？？？？'}<br>
-    3. ${seenEndings.clear2 ? 'クリア？' : '？？？？'}<br>
-  `;
+  document.getElementById('end1').textContent = seenEnds[0] ? "YOU DEAD" : "？？？？";
+  document.getElementById('end2').textContent = seenEnds[1] ? "CLEAR" : "？？？？";
+  document.getElementById('end3').textContent = seenEnds[2] ? "CLEAR？" : "？？？？";
 }
 
-// ⭐スタートボタン押したときにエンド状態をリセット
-document.getElementById('startBtn').addEventListener('click', () => {
-  // ゲーム画面表示などの処理
-  document.getElementById('startScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'block';
-
-  // ⭐ここでエンド状態リセット
-  seenEndings = {
-    bad: false,
-    clear: false,
-    clear2: false
-  };
-  updateEndList(); // 表示も更新
-});

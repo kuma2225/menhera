@@ -1,129 +1,278 @@
 body {
   margin: 0;
-  background: black;
+  font-family: "sans-serif";
+  background: transparent;
   color: white;
-  font-family: sans-serif;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-/* ゲーム画面全体を縦長に中央固定 */
-.screen {
-  position: relative;
-  width: 360px;
-  aspect-ratio: 9/16;
-  max-height: 100vh;
-  background-color: black;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
 }
 
-/* 背景画像 */
-.bg-img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
+.hidden {
+  display: none;
 }
 
-/* 彼女のイラスト */
-.hero-img {
-  max-width: 90%;
-  max-height: 60%;
-  margin-top: 20px;
-  z-index: 1;
+#infoScreen {
+  position: relative;
+  width: 390px;
+  height: 600px;
+  margin: auto;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
 }
 
-/* タイトル文字 */
-.game-title {
-  color: pink;
-  font-size: 1.8em;
+#infoScreen h2 {
+  color: hotpink;
+  margin-bottom: 20px;
+}
+
+#infoText p {
+  font-size: 16px;
   margin: 10px 0;
 }
 
-button {
+#backBtn {
+  margin-top: 30px;
   padding: 10px 20px;
-  margin: 10px;
-  font-size: 1em;
-  border: none;
-  border-radius: 10px;
-  background-color: pink;
+  font-size: 16px;
+  background-color: hotpink;
   color: black;
-  cursor: pointer;
+  border: none;
+  border-radius: 0;
 }
 
-/* テキストボックス */
-#textBox {
-  background-color: rgba(0,0,0,0.6);
-  padding: 10px;
+
+#startScreen, #gameScreen, #endScreen, #endListScreen {
+  position: relative;
+  width: 390px;
+  height: 600px;
+  margin: auto;
+  background-color: black;
+  overflow: hidden;
+}
+
+h1 {
+  color: hotpink;
+  margin-top: 20px;
+  font-size: 32px;
+}
+
+#startImage, #girl {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 60%;
+}
+
+#startBtn, #infoBtn, #retryBtn, #exitBtn, #endListBtn, #closeEndList {
   margin: 10px;
-  font-size: 0.9em;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: hotpink;
+  color: black;
+  border: none;
+  border-radius: 0; /* 四角に */
 }
 
-/* 選択肢 */
-#choices button {
+#bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center; /* 中央に配置 */
+  z-index: 0;
+}
+
+#girl {
+  position: absolute;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  max-height: 55%;
+}
+
+/* 病み度メーター位置を画面上部〜セリフの間へ */
+#meterContainer {
+  position: absolute;
+  top: 130px; /* セリフボックスの下より少し上 */
+  right: 10px;
+  width: 20px;
+  height: 100px;
+  background: #333;
+  z-index: 3;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: hidden;
+}
+
+/* 選択肢エリアの高さ固定 */
+#choices {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 170px;  /* 固定高さ */
+  z-index: 3;
+  background-color: black;
+  border-top: 2px solid hotpink;
+  padding-top: 10px; /* 上余白 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 上詰め */
+  align-items: center;
+}
+
+/* 選択肢ボタンの高さとマージン調整 */
+.choiceBtn {
+  width: 80%;
+  background: hotpink;
+  border: none;
+  font-size: 16px;
+  color: black;
+  border-radius: 0;
+  padding: 10px 0;
+  margin: 5px 0;
+  flex-shrink: 0;
+}
+
+/* 3つの場合は等間隔に空けたいので間隔調整用のクラスをJSで付ける用意 */
+.choiceBtn.spaced {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+
+#meter {
+  width: 100%;
+  height: 0%;
+  background: green;
+  transition: height 0.5s;
+}
+
+#textBox {
+  position: absolute;
+  bottom: 160px;
+  width: 90%;
+  left: 5%;
+  padding: 10px;
+  background-color: black;
+  border: 2px solid hotpink;
+  color: white;
+  z-index: 3;
+}
+
+#message {
+  font-size: 16px;
+  margin: 0;
+  color: hotpink;
+}
+
+#choices {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 3;
+  background-color: black;
+  border-top: 2px solid hotpink;
+  padding-bottom: 10px;
+}
+
+.choiceBtn {
   display: block;
   margin: 5px auto;
+  padding: 10px;
+  background: hotpink;
+  border: none;
+  font-size: 16px;
+  width: 80%;
+  color: black;
+  border-radius: 0;
 }
 
-/* 病み度 */
-#yamiMeter {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-
-/* エンド一覧ボタン */
 #endListBtn {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: pink;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: black;
-  font-size: 0.9em;
-  cursor: pointer;
+  z-index: 3;
+  border-radius: 0;
 }
 
-/* エンド一覧 */
-#endList {
-  position: absolute;
-  top: 50px;
-  left: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px;
-  border-radius: 10px;
-  text-align: left;
-  font-size: 0.9em;
-}
 
-/* エンド画面 */
-#endScreen .overlay {
+#endOverlay {
   position: absolute;
   width: 100%;
   height: 100%;
   background: black;
   opacity: 0.9;
-  z-index: -1;
+  z-index: 4;
 }
 
-.end-text-center {
-  font-size: 2em;
-  margin-top: 30vh;
-  color: white;
+#endType {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36px;
+  color: hotpink;
+  z-index: 5;
 }
 
-.end-text-corner {
+#endName {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  font-size: 1em;
-  color: pink;
+  font-size: 20px;
+  color: white;
+  z-index: 5;
 }
+
+#retryBtn, #exitBtn {
+  position: relative;
+  z-index: 5;
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: hotpink;
+  color: black;
+  border: none;
+  border-radius: 0;
+}
+
+#endListScreen ul {
+  list-style: none;
+  padding: 0;
+  color: white;
+}
+
+#endListScreen li {
+  margin: 10px;
+  font-size: 18px;
+  color: hotpink;
+}
+
+/* 共通の枠線スタイル */
+.frame-box {
+  border: 3px solid hotpink;  /* ピンクの枠線 */
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 20px auto;
+  width: 360px;                /* 画面幅より少し小さめ */
+  background-color: black;     /* 背景は黒のまま */
+}
+
+#gameScreen {
+  width: 100%;        /* 親要素に合わせて最大化 */
+  height: 100%;
+  background-color: black;
+}
+
+/* ダブルタップズーム防止 */
+body {
+  touch-action: manipulation;
+}
+

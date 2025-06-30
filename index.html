@@ -2,55 +2,63 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>メンヘラ彼女回避ゲーム</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>メンヘラ彼女ゲーム</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- スタート画面 -->
-    <div id="startScreen" class="screen">
-      <img src="images/menhera1.png" class="hero-img" />
-      <h1 class="game-title">メンヘラ彼女</h1>
-      <button onclick="startGame()">スタート</button>
-      <button onclick="showDescription()">説明</button>
+    <!-- 説明画面 -->
+    <div id="infoScreen" class="frame-box hidden">
+      <h2>ゲームの説明</h2>
+      <div id="infoText">
+        <p>
+          あなたのとっても可愛い彼女。飲み会で帰りが遅いあなたを不安そうに待っているよ。早く家に帰ってあげて！（そういえばなんであなたの家にいるんだろう…？）
+        </p>
+      </div>
+      <button id="backBtn">もどる</button>
     </div>
 
-    <!-- 説明画面 -->
-    <div id="descriptionScreen" class="screen" style="display: none">
-      <p>
-        彼女の怒りをなだめながらエンドを目指そう。病み度100でゲームオーバー。
-      </p>
-      <button onclick="backToStart()">戻る</button>
+    <!-- スタート画面 -->
+    <div id="startScreen" class="frame-box">
+      <h1>メンヘラ彼女</h1>
+      <img src="images/menhera1.png" alt="彼女" id="startImage" />
+      <button id="startBtn">スタート</button>
+      <button id="infoBtn">説明</button>
     </div>
 
     <!-- ゲーム画面 -->
-    <div id="gameScreen" class="screen" style="display: none">
-      <img id="bg" src="images/room.jpg" class="bg-img" />
-      <img id="hero" src="images/menhera1.png" class="hero-img" />
-
-      <div id="endListBtn" onclick="toggleEndList()">エンド一覧</div>
-
+    <div id="gameScreen" class="hidden">
+      <img src="images/room.jpg" alt="背景" id="bg" />
+      <button id="endListBtn">エンド一覧</button>
+      <div id="meterContainer"><div id="meter"></div></div>
+      <img src="images/menhera1.png" alt="彼女" id="girl" />
       <div id="textBox">
-        <p id="dialogue">ここにセリフが表示されます。</p>
+        <p id="message">（ここにセリフが表示される）</p>
       </div>
-
       <div id="choices"></div>
-
-      <div id="yamiMeter">病み度：0%</div>
-
-      <!-- エンド一覧 -->
-      <div id="endList" style="display: none">
-        <h3>エンド一覧</h3>
-        <ul id="endItems"></ul>
-      </div>
     </div>
 
     <!-- エンド画面 -->
-    <div id="endScreen" class="screen" style="display: none">
-      <div class="overlay"></div>
-      <div class="end-text-center" id="endType">YOU DEAD</div>
-      <div class="end-text-corner" id="endName">ゲームオーバー</div>
-      <button onclick="retryGame()">リトライ</button>
-      <button onclick="backToStart()">終了</button>
+    <div id="endScreen" class="frame-box hidden">
+      <div id="endOverlay"></div>
+      <p id="endType"></p>
+      <p id="endName"></p>
+      <button id="retryBtn">リトライ</button>
+      <button id="exitBtn">終了</button>
+    </div>
+
+    <!-- エンド一覧 -->
+    <div id="endListScreen" class="hidden">
+      <h2>エンド一覧</h2>
+      <ul id="endList">
+        <li id="end1">？？？？</li>
+        <li id="end2">？？？？</li>
+        <li id="end3">？？？？</li>
+      </ul>
+      <button id="closeEndList">閉じる</button>
     </div>
 
     <script src="game.js"></script>
