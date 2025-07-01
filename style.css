@@ -1,11 +1,17 @@
 body {
   margin: 0;
   font-family: "sans-serif";
-  background: transparent;
+  background: black; /* 背景を黒に */
   color: white;
   text-align: center;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  touch-action: manipulation;
 }
+
 
 .hidden {
   display: none;
@@ -255,20 +261,21 @@ h1 {
   color: hotpink;
 }
 
-/* 共通の枠線スタイル */
 .frame-box {
-  border: 3px solid hotpink;  /* ピンクの枠線 */
+  border: 3px solid hotpink;
+  width: 360px;
+  height: 600px;
   padding: 20px;
   box-sizing: border-box;
-  margin: 20px auto;
-  width: 360px;                /* 画面幅より少し小さめ */
-  background-color: black;     /* 背景は黒のまま */
+  background-color: black;
 }
 
 #gameScreen {
-  width: 100%;        /* 親要素に合わせて最大化 */
-  height: 100%;
+  position: relative;
+  width: 390px;
+  height: 600px;
   background-color: black;
+  overflow: hidden;
 }
 
 /* ダブルタップズーム防止 */
