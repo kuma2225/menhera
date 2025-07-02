@@ -11,18 +11,21 @@
   </head>
   <body>
     <!-- 説明画面 -->
-    <div id="infoScreen" class="frame-box hidden">
+    <div id="infoScreen" class="hidden">
       <h2>ゲームの説明</h2>
       <div id="infoText">
-        <p>
-          あなたのとっても可愛い彼女。飲み会で帰りが遅いあなたを不安そうに待っているよ。早く家に帰ってあげて！（そういえばなんであなたの家にいるんだろう…？）
-        </p>
+        <p>あなたのとっても可愛い彼女。</p>
+        <p>飲み会で帰りが遅いあなたを</p>
+        <p>玄関で不安そうに待っているよ。</p>
+  <span class="suspicious">（そういえばなんで家にいるんだろう…？）</span>
+</p>
+
       </div>
       <button id="backBtn">もどる</button>
     </div>
 
     <!-- スタート画面 -->
-    <div id="startScreen" class="frame-box">
+    <div id="startScreen">
       <h1>メンヘラ彼女</h1>
       <img src="images/menhera1.png" alt="彼女" id="startImage" />
       <button id="startBtn">スタート</button>
@@ -42,7 +45,7 @@
     </div>
 
     <!-- エンド画面 -->
-    <div id="endScreen" class="frame-box hidden">
+    <div id="endScreen" class="hidden">
       <div id="endOverlay"></div>
       <p id="endType"></p>
       <p id="endName"></p>

@@ -26,10 +26,10 @@ function startGame() {
   gameScreen.classList.remove('hidden');
   yamido = 30;
   updateMeter();
-  showMessage("ねぇ、昨日どこに行ってたの？", [
-    { text: "友達と飲みに…", delta: 30 },
-    { text: "バイトだったよ", delta: -10 },
-    { text: "言う必要ある？", delta: 80 }
+  showMessage("おかえり。遅かったね。", [
+    { text: "ただいま。", delta: 40 },
+    { text: "ごめんね、まさき家まで送ってて…", delta: 10 },
+    { text: "んー大好きだよみーちゃん♡", delta: 60 }
   ]);
 }
 
@@ -77,13 +77,13 @@ function updateMeter() {
   let percent = Math.min(yamido, 100);
   meter.style.height = percent + "%";
   if (yamido < 50) {
-    meter.style.background = "green";
+    meter.style.background = "#4d9933";
     girl.src = "images/menhera1.png";
   } else if (yamido < 80) {
-    meter.style.background = "yellow";
+    meter.style.background = "#e6b800";
     girl.src = "images/menhera2.png";
   } else {
-    meter.style.background = "red";
+    meter.style.background = "#b3244d";
     girl.src = "images/menhera3.png";
   }
 }
@@ -120,6 +120,8 @@ function showEnd(type, name, id) {
   endName.textContent = name;
   seenEnds[id] = true;
 }
+
+
 
 startBtn.onclick = startGame;
 

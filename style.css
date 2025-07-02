@@ -36,7 +36,21 @@ body {
 #infoText p {
   font-size: 16px;
   margin: 10px 0;
+  text-align: left;
+  padding-left: 76px;
 }
+
+.suspicious {
+  font-size: 14px;      /* 小さめの文字 */
+  color: #aaa;          /* 薄いグレーで不安げな色合い */
+  font-style: italic;   /* イタリックで違和感を演出 */
+  display: block;       /* 改行して別行に */
+  text-align: left;
+  padding-left: 70px;
+  margin-top: 5px;      /* 少し上の文から間隔を空ける */
+}
+
+
 
 #backBtn {
   margin-top: 30px;
@@ -64,14 +78,47 @@ h1 {
   font-size: 32px;
 }
 
-#startImage, #girl {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  max-height: 60%;
+/* スタート画面の女の子の画像を大きく＆絶対配置 */
+#startImage {
+  position: absolute;
+  top: 60px; /* 画像の上の位置（調整してOK） */
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 80%; /* 女の子の大きさ調整 */
+  width: auto;
+  z-index: 1; /* 背景より上、ボタンより下に */
 }
 
-#startBtn, #infoBtn, #retryBtn, #exitBtn, #endListBtn, #closeEndList {
+#startBtn {
+  position: absolute;
+  bottom: 30px;
+  left: 36%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: hotpink;
+  color: black;
+  border: none;
+  border-radius: 0;
+  z-index: 2;
+}
+
+#infoBtn {
+  position: absolute;
+  bottom: 30px;
+  left: 64%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: hotpink;
+  color: black;
+  border: none;
+  border-radius: 0;
+  z-index: 2;
+}
+
+
+ #retryBtn, #exitBtn, #endListBtn, #closeEndList {
   margin: 10px;
   padding: 10px 20px;
   font-size: 16px;
@@ -80,6 +127,7 @@ h1 {
   border: none;
   border-radius: 0; /* 四角に */
 }
+
 
 #bg {
   position: absolute;
@@ -90,27 +138,28 @@ h1 {
   object-fit: cover;
   object-position: center center; /* 中央に配置 */
   z-index: 0;
+  opacity: 0.9; /* 0.0～1.0で調整。0.5なら半透明 */
 }
 
 #girl {
   position: absolute;
-  bottom: 150px;
+  bottom: -90px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
-  max-height: 55%;
+  max-height:110%;
 }
 
 /* 病み度メーター位置を画面上部〜セリフの間へ */
 #meterContainer {
   position: absolute;
-  top: 130px; /* セリフボックスの下より少し上 */
-  right: 10px;
+  top: 60px; /* セリフボックスの下より少し上 */
+  right: 65px;
   width: 20px;
   height: 100px;
   background: #333;
   z-index: 3;
-  border: 1px solid white;
+  border: 2px solid rgb(168, 168, 168);
   display: flex;
   flex-direction: column-reverse;
   overflow: hidden;
@@ -261,14 +310,6 @@ h1 {
   color: hotpink;
 }
 
-.frame-box {
-  border: 3px solid hotpink;
-  width: 360px;
-  height: 600px;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: black;
-}
 
 #gameScreen {
   position: relative;
