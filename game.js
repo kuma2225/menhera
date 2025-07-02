@@ -17,21 +17,80 @@ const endName = document.getElementById('endName');
 const infoScreen = document.getElementById("infoScreen");
 const backBtn = document.getElementById("backBtn");
 
-
 let yamido = 30;
-let seenEnds = [false, false, false]; // 0:YOU DEAD, 1:CLEAR, 2:CLEAR?
+let seenEnds = [false, false, false];
+let currentNode = null;
+
+const story = {
+  start: {
+    text: "おかえり。遅かったね。",
+    options: [
+      { text: "ただいま。", delta: 40, next: "q1_a" },
+      { text: "ごめんね、まさき家まで送ってて…", delta: 10, next: "q1_b" },
+      { text: "んー大好きだよみーちゃん♡", delta: 60, next: "q1_c" }
+    ]
+  },
+  q1_a: {
+    text: "それだけ？他に言うことないの？",
+    options: [
+      { text: "これ、お土産。", delta: -10, next: "q2_1a" },
+      { text: "大好きだよ。", delta: 5, next: "q2_2a" }
+    ]
+  },
+  q1_b: {
+    text: "まさきくんって家、杉本町だよね？",
+    options: [
+      { text: "え…うん。", delta: 30, next: "q2_1b" },
+      { text: "あいつ最近引っ越したんだよ。", delta: 20, next: "q2_2b" }
+    ]
+  },
+  q1_c: {
+    text: "誰よその女！浮気してたの！？もうもえのこと好きじゃないんだ！！",
+    options: [
+      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "q2_1c" },
+      { text: "大丈夫。お前が一番だよ。", delta: 40, next: "q2_2c" }
+    ]
+  },
+
+  q2_1a: {
+    text: "…ケーキ？",
+    options: [
+      { text: "今日で付き合って178日記念。", delta: -10, next: "clear" },
+      { text: "遅くなっちゃったからさ。", delta: 5, next: "clearMaybe" }
+    ]
+  },
+  q2_2a: {
+    text: "てきとうなこと言わないで！じゃあ今日が何の日かわかる？",
+    options: [
+      { text: "今日で付き合って", delta: 30, next: "dead" },
+      { text: "あいつ最近引っ越したんだよ。", delta: 20, next: "clearMaybe" }
+    ]
+  },
+  q2_c: {
+    text: "誰よその女！浮気してたの！？もうもえのこと好きじゃないんだ！！",
+    options: [
+      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "clear" },
+      { text: "大丈夫。お前が一番だよ。", delta: 40, next: "dead" }
+    ]
+  }
+  ,
+
+
+
+  
+  clear: "CLEAR",
+  clearMaybe: "CLEAR？",
+  dead: "YOU DEAD"
+};
 
 function startGame() {
   startScreen.classList.add('hidden');
   gameScreen.classList.remove('hidden');
   yamido = 30;
   updateMeter();
-  showMessage("おかえり。遅かったね。", [
-    { text: "ただいま。", delta: 40 },
-    { text: "ごめんね、まさき家まで送ってて…", delta: 10 },
-    { text: "んー大好きだよみーちゃん♡", delta: 60 }
-  ]);
+  handleNext("start");
 }
+
 
 function showMessage(text, options) {
   message.textContent = "";
@@ -44,33 +103,35 @@ function showMessage(text, options) {
 
   choices.innerHTML = "";
 
-  options.forEach((opt, idx) => {
+    options.forEach((opt, idx) => {
     const btn = document.createElement('button');
     btn.textContent = opt.text;
     btn.classList.add('choiceBtn');
 
-    // 3つ選択肢の時だけ、上下のスペースを開けるためクラス付与
+    // 3つ選択肢の時だけスペース調整
     if (options.length === 3) {
-      if (idx === 0) btn.style.marginTop = '0';   // 一番上は余白なし
-      if (idx === 1) btn.style.marginTop = 'auto'; // 真ん中は自動マージンで間を広げる
-      if (idx === 2) btn.style.marginTop = 'auto'; // 下もautoで間隔維持
+      if (idx === 0) btn.style.marginTop = '0';
+      if (idx === 1 || idx === 2) btn.style.marginTop = 'auto';
     }
 
     btn.onclick = () => {
       yamido += opt.delta;
       yamido = Math.max(0, yamido);
       updateMeter();
-      checkEnd();
+      handleNext(opt.next);
     };
-    choices.appendChild(btn);
-  });
 
-  // 2つのときは上から詰める（flex-start）に変更
+    choices.appendChild(btn);
+  }); 
+
+  // 選択肢数に応じた配置
   if (options.length === 2) {
     choices.style.justifyContent = 'flex-start';
   } else {
     choices.style.justifyContent = 'space-between';
   }
+
+ 
 }
 
 function updateMeter() {
@@ -89,28 +150,20 @@ function updateMeter() {
 }
 
 
-function checkEnd() {
-  if (yamido > 100) {
-    setTimeout(() => {
-      showEnd("YOU DEAD", "殺された", 0);
-    }, 650);
+
+function handleNext(nextId) {
+  if (nextId === "dead") {
+    setTimeout(() => showEnd("YOU DEAD", "殺された", 0), 650);
+  } else if (nextId === "clear") {
+    setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
+  } else if (nextId === "clearMaybe") {
+    setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
   } else {
-    if (yamido < 20) {
-      setTimeout(() => {
-        showEnd("CLEAR", "うまく言い訳できた", 1);
-      }, 650);
-    } else if (yamido < 60) {
-      setTimeout(() => {
-        showEnd("CLEAR？", "なんとかごまかせた…", 2);
-      }, 650);
-    } else {
-      showMessage("……本当に？", [
-        { text: "もちろん", delta: -20 },
-        { text: "違うかも", delta: 40 }
-      ]);
-    }
+    currentNode = story[nextId];
+    showMessage(currentNode.text, currentNode.options);
   }
 }
+
 
 
 function showEnd(type, name, id) {
@@ -130,12 +183,9 @@ retryBtn.onclick = () => {
   gameScreen.classList.remove('hidden');
   yamido = 30;
   updateMeter();
-  showMessage("ねぇ、昨日どこに行ってたの？", [
-    { text: "友達と飲みに…", delta: 30 },
-    { text: "バイトだったよ", delta: -10 },
-    { text: "言う必要ある？", delta: 80 }
-  ]);
+  handleNext("start"); // 最初のストーリーノードから再開
 };
+
 
 exitBtn.onclick = () => {
   endScreen.classList.add('hidden');
