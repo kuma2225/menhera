@@ -59,7 +59,21 @@ const story = {
       { text: "遅くなっちゃったからさ。", delta: 5, next: "clearMaybe" }
     ]
   },
-  q2_2a: {
+
+ q2_2a: {
+  text: "てきとうなこと言わないで！じゃあ今日が何の日かわかる？",
+  type: "input",
+  answer: 189,
+  prefix: "付き合って",
+  suffix: "日記念でしょ。",
+  delta: -50,
+  deltaWrong: 40,
+  correctNext: "q3_1a",
+  wrongNext: "q3_2a"
+},
+
+
+  q2_1b: {
     text: "てきとうなこと言わないで！じゃあ今日が何の日かわかる？",
     options: [
       { text: "今日で付き合って", delta: 30, next: "dead" },
@@ -72,9 +86,29 @@ const story = {
       { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "clear" },
       { text: "大丈夫。お前が一番だよ。", delta: 40, next: "dead" }
     ]
-  }
-  ,
+  },
 
+  q3_1a: {
+    text: "覚えててくれたの…？",
+    options: [
+      { text: "もちろんだよ。", delta: -100, next: "clear" },
+      { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -100, next: "q4_1a" }
+    ]
+  },
+
+  q4_1a: {
+    text: "ほんとに！？じゃあ７６日前の１３時間４０分前、なんの話してたでしょうか！",
+    options: [
+      { text: "…………", delta: 100, next: "q5_1a" },
+      ]
+  },
+
+q5_1a: {
+    text: "もえ嘘つく人きらい。",
+    options: [
+      
+      ]
+  },
 
 
   
@@ -91,7 +125,6 @@ function startGame() {
   handleNext("start");
 }
 
-
 function showMessage(text, options) {
   message.textContent = "";
   let i = 0;
@@ -103,36 +136,62 @@ function showMessage(text, options) {
 
   choices.innerHTML = "";
 
-    options.forEach((opt, idx) => {
+  options.forEach((opt, idx) => {
     const btn = document.createElement('button');
     btn.textContent = opt.text;
     btn.classList.add('choiceBtn');
 
-    // 3つ選択肢の時だけスペース調整
     if (options.length === 3) {
       if (idx === 0) btn.style.marginTop = '0';
       if (idx === 1 || idx === 2) btn.style.marginTop = 'auto';
     }
+btn.onclick = () => {
+  yamido += opt.delta;
+  yamido = Math.max(0, yamido);
+  updateMeter();
 
-    btn.onclick = () => {
-      yamido += opt.delta;
-      yamido = Math.max(0, yamido);
-      updateMeter();
-      handleNext(opt.next);
-    };
+  const nextNode = story[opt.next];
+
+  // 病み度が100超えていて、次にセリフがあるとき
+  if (yamido > 100 && nextNode && nextNode.text) {
+    message.textContent = "";
+    choices.innerHTML = "";
+
+    let j = 0;
+    const interval = setInterval(() => {
+      message.textContent += nextNode.text[j];
+      j++;
+      if (j >= nextNode.text.length) {
+        clearInterval(interval);
+
+        // 1秒待ってから赤フラッシュ→さらに0.5秒後エンド画面
+        setTimeout(() => {
+          document.getElementById("redFlash").style.display = "block";
+
+          setTimeout(() => {
+            document.getElementById("redFlash").style.display = "none";
+            showEnd("YOU DEAD", "殺された", 0);
+          }, 100);
+
+        }, 600);
+      }
+    }, 30);
+  } else {
+    handleNext(opt.next);
+  }
+};
+
 
     choices.appendChild(btn);
-  }); 
+  });
 
-  // 選択肢数に応じた配置
   if (options.length === 2) {
     choices.style.justifyContent = 'flex-start';
   } else {
     choices.style.justifyContent = 'space-between';
   }
-
- 
 }
+
 
 function updateMeter() {
   let percent = Math.min(yamido, 100);
@@ -149,8 +208,6 @@ function updateMeter() {
   }
 }
 
-
-
 function handleNext(nextId) {
   if (nextId === "dead") {
     setTimeout(() => showEnd("YOU DEAD", "殺された", 0), 650);
@@ -160,12 +217,67 @@ function handleNext(nextId) {
     setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
   } else {
     currentNode = story[nextId];
-    showMessage(currentNode.text, currentNode.options);
+    if (currentNode.type === "input") {
+      showInputPrompt(currentNode); // ここで currentNode を使う！
+    } else {
+      showMessage(currentNode.text, currentNode.options);
+    }
   }
 }
 
+function showInputPrompt(node) {
+  message.textContent = node.text;
+  choices.innerHTML = "";
+
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.alignItems = "center";
+  container.style.gap = "6px";
+
+  const prefixSpan = document.createElement("span");
+  prefixSpan.textContent = node.prefix || "";
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.min = 0;
+  input.style.fontSize = "1.2em";
+  input.style.width = "60px";
+
+  const suffixSpan = document.createElement("span");
+  suffixSpan.textContent = node.suffix || "";
+
+  const submitBtn = document.createElement("button");
+  submitBtn.textContent = "決定";
+  submitBtn.classList.add("submitBtn"); // ← 修正ここ
 
 
+  submitBtn.onclick = () => {
+  const val = parseInt(input.value, 10);
+  if (isNaN(val)) {
+    alert("数字を入力してください");
+    return;
+  }
+
+  if (val === node.answer) {
+    yamido = Math.max(0, yamido + (node.delta || 0));  // 減らす方向のdeltaなら負の値を入れてる想定
+    updateMeter();
+    handleNext(node.correctNext);
+  } else {
+    yamido = Math.min(100, yamido + (node.deltaWrong || 0));  // 不正解なら増える方向にdeltaWrongを別途用意
+    updateMeter();
+    handleNext(node.wrongNext);
+  }
+};
+
+
+  container.appendChild(prefixSpan);
+  container.appendChild(input);
+  container.appendChild(suffixSpan);
+  choices.appendChild(container);
+  choices.appendChild(submitBtn);
+}
+
+  
 function showEnd(type, name, id) {
   gameScreen.classList.add('hidden');
   endScreen.classList.remove('hidden');

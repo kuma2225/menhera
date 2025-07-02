@@ -165,6 +165,8 @@ h1 {
   overflow: hidden;
 }
 
+
+
 /* 選択肢エリアの高さ固定 */
 #choices {
   position: absolute;
@@ -180,7 +182,10 @@ h1 {
   flex-direction: column;
   justify-content: flex-start; /* 上詰め */
   align-items: center;
+  
 }
+
+
 
 /* 選択肢ボタンの高さとマージン調整 */
 .choiceBtn {
@@ -227,6 +232,8 @@ h1 {
   color: hotpink;
 }
 
+
+/* 決定ボタンの表示位置が押し出されないように修正 */
 #choices {
   position: absolute;
   bottom: 0;
@@ -235,7 +242,31 @@ h1 {
   background-color: black;
   border-top: 2px solid hotpink;
   padding-bottom: 10px;
+  max-height: 200px;
+  overflow-y: auto;
 }
+
+/* 入力欄と決定ボタンを横に並べる */
+#choices div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* 入力欄スタイル */
+#choices input {
+  font-size: 16px;
+  padding: 8px;
+  width: 60px;
+  text-align: center;
+  background-color: white;
+  color: black;
+  border: 1px solid hotpink;
+  border-radius: 0;
+}
+
 
 .choiceBtn {
   display: block;
@@ -286,6 +317,17 @@ h1 {
   z-index: 5;
 }
 
+.submitBtn {
+  font-size: 16px;
+  padding: 10px 20px;
+  background: hotpink;
+  color: black;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+
 #retryBtn, #exitBtn {
   position: relative;
   z-index: 5;
@@ -318,6 +360,19 @@ h1 {
   background-color: black;
   overflow: hidden;
 }
+
+#redFlash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: red;
+  opacity: 0.2;
+  z-index: 999;
+  display: none;
+}
+
 
 /* ダブルタップズーム防止 */
 body {
