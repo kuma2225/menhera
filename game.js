@@ -21,6 +21,7 @@ let yamido = 30;
 let seenEnds = [false, false, false];
 let currentNode = null;
 
+
 const story = {
   start: {
     text: "おかえり。遅かったね。",
@@ -67,7 +68,7 @@ const story = {
   prefix: "付き合って",
   suffix: "日記念でしょ。",
   delta: -50,
-  deltaWrong: 40,
+  deltaWrong: 100,
   correctNext: "q3_1a",
   wrongNext: "q3_2a"
 },
@@ -96,6 +97,12 @@ const story = {
     ]
   },
 
+q3_2a: {
+  text: "もえとの時間なんてどうでもよかったんだね。",
+  next: "dead" 
+},
+
+
   q4_1a: {
     text: "ほんとに！？じゃあ７６日前の１３時間４０分前、なんの話してたでしょうか！",
     options: [
@@ -104,11 +111,9 @@ const story = {
   },
 
 q5_1a: {
-    text: "もえ嘘つく人きらい。",
-    options: [
-      
-      ]
-  },
+  text: "もえ嘘つく人きらい。",
+  next: "dead" 
+},
 
 
   
@@ -150,36 +155,53 @@ btn.onclick = () => {
   yamido = Math.max(0, yamido);
   updateMeter();
 
-  const nextNode = story[opt.next];
+  // nextIdを取り出す
+  const nextId = opt.next;
+  const nextNode = story[nextId];
 
-  // 病み度が100超えていて、次にセリフがあるとき
-  if (yamido > 100 && nextNode && nextNode.text) {
-    message.textContent = "";
-    choices.innerHTML = "";
+  if (yamido > 100) {
+    // 病み度が100超えたら
+    if (nextNode && typeof nextNode === "object" && nextNode.text) {
+      // 次のセリフがある場合はそれをタイピング表示してから赤フラッシュ
+      message.textContent = "";
+      choices.innerHTML = "";
 
-    let j = 0;
-    const interval = setInterval(() => {
-      message.textContent += nextNode.text[j];
-      j++;
-      if (j >= nextNode.text.length) {
-        clearInterval(interval);
-
-        // 1秒待ってから赤フラッシュ→さらに0.5秒後エンド画面
-        setTimeout(() => {
-          document.getElementById("redFlash").style.display = "block";
+      let j = 0;
+      const interval = setInterval(() => {
+        message.textContent += nextNode.text[j];
+        j++;
+        if (j >= nextNode.text.length) {
+          clearInterval(interval);
 
           setTimeout(() => {
-            document.getElementById("redFlash").style.display = "none";
-            showEnd("YOU DEAD", "殺された", 0);
-          }, 100);
+            const redFlash = document.getElementById("redFlash");
+            redFlash.style.display = "block";
 
-        }, 600);
-      }
-    }, 30);
+            setTimeout(() => {
+              redFlash.style.display = "none";
+              showEnd("YOU DEAD", "殺された", 0);
+            }, 50);
+
+          }, 750);
+        }
+      }, 30);
+
+    } else {
+      // セリフがなければ即赤フラッシュ＆エンド画面へ
+      const redFlash = document.getElementById("redFlash");
+      redFlash.style.display = "block";
+
+      setTimeout(() => {
+        redFlash.style.display = "none";
+        showEnd("YOU DEAD", "殺された", 0);
+      }, 700);
+    }
   } else {
-    handleNext(opt.next);
+    // 病み度100以下なら普通に進行
+    handleNext(nextId);
   }
 };
+
 
 
     choices.appendChild(btn);
@@ -209,26 +231,52 @@ function updateMeter() {
 }
 
 function handleNext(nextId) {
-  if (nextId === "dead") {
-    setTimeout(() => showEnd("YOU DEAD", "殺された", 0), 650);
-  } else if (nextId === "clear") {
-    setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
-  } else if (nextId === "clearMaybe") {
-    setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
+  const node = story[nextId];
+
+  if (!node || typeof node === 'string') {
+    // 文字列だけならエンド判定
+    if (nextId === "dead") {
+      const redFlash = document.getElementById("redFlash");
+      redFlash.style.display = "block";
+      setTimeout(() => {
+        redFlash.style.display = "none";
+        showEnd("YOU DEAD", "殺された", 0);
+      }, 700);
+    } else if (nextId === "clear") {
+      setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
+    } else if (nextId === "clearMaybe") {
+      setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
+    }
+    return;  // 処理をここで止める
+  }
+
+  currentNode = node;
+
+  if (currentNode.type === "input") {
+    showInputPrompt(currentNode);
   } else {
-    currentNode = story[nextId];
-    if (currentNode.type === "input") {
-      showInputPrompt(currentNode); // ここで currentNode を使う！
-    } else {
-      showMessage(currentNode.text, currentNode.options);
+    showMessage(currentNode.text, currentNode.options || []);
+    if ((!currentNode.options || currentNode.options.length === 0) && currentNode.next) {
+      const waitTime = 1000 + currentNode.text.length * 30;
+      setTimeout(() => handleNext(currentNode.next), waitTime);
     }
   }
 }
 
-function showInputPrompt(node) {
-  message.textContent = node.text;
-  choices.innerHTML = "";
 
+
+
+function showInputPrompt(node) { 
+   // タイピング表示
+  message.textContent = "";
+  let i = 0;
+  const interval = setInterval(() => {
+    message.textContent += node.text[i];
+    i++;
+    if (i >= node.text.length) clearInterval(interval);
+  }, 30); // ← タイピング速度（ms）
+
+  choices.innerHTML = "";
   const container = document.createElement("div");
   container.style.display = "flex";
   container.style.alignItems = "center";
@@ -279,12 +327,14 @@ function showInputPrompt(node) {
 
   
 function showEnd(type, name, id) {
+  console.log("showEnd called:", type, name, id);
   gameScreen.classList.add('hidden');
   endScreen.classList.remove('hidden');
   endType.textContent = type;
   endName.textContent = name;
   seenEnds[id] = true;
 }
+
 
 
 
