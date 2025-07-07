@@ -24,93 +24,136 @@ let currentNode = null;
 
 const story = {
   start: {
-    text: "おかえり。遅かったね。",
+    text: "おかえり、遅かったね。",
     options: [
-      { text: "ただいま。", delta: 40, next: "q1_a" },
-      { text: "ごめんね、まさき家まで送ってて…", delta: 10, next: "q1_b" },
-      { text: "んー大好きだよみーちゃん♡", delta: 60, next: "q1_c" }
+      { text: "ただいま", delta: 40, next: "q1_1" },
+      { text: "ごめんね、まさきを家まで送ってて", delta: 10, next: "q1_2" },
+      { text: "んー大好きだよみーちゃん♡", delta: 60, next: "q1_3" }
     ]
   },
-  q1_a: {
+
+  q1_1: {
     text: "それだけ？他に言うことないの？",
     options: [
-      { text: "これ、お土産。", delta: -10, next: "q2_1a" },
-      { text: "大好きだよ。", delta: 5, next: "q2_2a" }
+      { text: "これ、お土産。", delta: -10, next: "q2_11" },
+      { text: "大好きだよ。", delta: 5, next: "q2_12" }
     ]
   },
-  q1_b: {
+
+  q1_2: {
     text: "まさきくんって家、杉本町だよね？",
     options: [
-      { text: "え…うん。", delta: 30, next: "q2_1b" },
-      { text: "あいつ最近引っ越したんだよ。", delta: 20, next: "q2_2b" }
-    ]
-  },
-  q1_c: {
-    text: "誰よその女！浮気してたの！？もうもえのこと好きじゃないんだ！！",
-    options: [
-      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "q2_1c" },
-      { text: "大丈夫。お前が一番だよ。", delta: 40, next: "q2_2c" }
+      { text: "え…うん。", delta: 30, next: "q2_21" },
+      { text: "あいつ最近引っ越したんだよ。", delta: 20, next: "q2_22" }
     ]
   },
 
-  q2_1a: {
+  q1_3: {
+    text: "みーちゃん？誰よその女！！浮気してたの！？もうもえのこと好きじゃないんだ！！",
+    options: [
+      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "q2_31" },
+      { text: "大丈夫。もえみが一番だよ。", delta: 40, next: "q2_32" }
+    ]
+  },
+
+  q2_11: {
     text: "…ケーキ？",
     options: [
-      { text: "今日で付き合って178日記念。", delta: -10, next: "clear" },
-      { text: "遅くなっちゃったからさ。", delta: 5, next: "clearMaybe" }
+      { text: "今日で付き合って178日記念。", delta: -10, next: "q3_111" },
+      { text: "遅くなっちゃったからさ。", delta: 5, next: "q3_112" }
     ]
   },
 
- q2_2a: {
-  text: "てきとうなこと言わないで！じゃあ今日が何の日かわかる？",
+ q2_12: {
+  text: "ほんとに思ってる？じゃあ今日が何の日かわかる？",
   type: "input",
   answer: 189,
   prefix: "付き合って",
   suffix: "日記念でしょ。",
   delta: -50,
   deltaWrong: 100,
-  correctNext: "q3_1a",
-  wrongNext: "q3_2a"
+  correctNext: "q3_121",
+  wrongNext: "q3_122"
 },
 
-
-  q2_1b: {
-    text: "てきとうなこと言わないで！じゃあ今日が何の日かわかる？",
+  q2_21: {
+    text: "じゃあなんで中百舌鳥に行ってたの？",
     options: [
-      { text: "今日で付き合って", delta: 30, next: "dead" },
-      { text: "あいつ最近引っ越したんだよ。", delta: 20, next: "clearMaybe" }
-    ]
-  },
-  q2_c: {
-    text: "誰よその女！浮気してたの！？もうもえのこと好きじゃないんだ！！",
-    options: [
-      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "clear" },
-      { text: "大丈夫。お前が一番だよ。", delta: 40, next: "dead" }
+      { text: "…行ってないよ？", delta: 30, next: "q3_211" },
+      { text: "なんで知ってんの？もう勝手にGPSつけないって言ったよね？", delta: 20, next: "q3_212" }
     ]
   },
 
-  q3_1a: {
+  q2_22: {
+    text: "ふーん…。あとさ、今日の飲み会男の人だけって言ってたよね？…誰この女達？",
+    options: [
+      { text: "（なんで鍵垢のツイート見られてんの…）", delta: -20, next: "q3_221" },
+      { text: "まさきが勝手につれてきてさー", delta: 40, next: "q3_222" }
+    ]
+  },
+
+  q2_31: {
+    text: "そんな言い訳でいけると思った？",
+    next: "dead"
+  },
+
+    q2_32: {
+    text: "なんも大丈夫じゃねーよ",
+    next: "dead"
+  },
+
+  q3_111: {
+  text: "189日だよ。もえとの11日どうでもよかったんだね。",
+  next: "dead" 
+},
+
+  q3_112: {
+    text: "…覚えてないんだ。もえとの記念日。",
+    next: "dead" 
+  },
+
+   q3_121: {
     text: "覚えててくれたの…？",
     options: [
       { text: "もちろんだよ。", delta: -100, next: "clear" },
-      { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -100, next: "q4_1a" }
+      { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -100, next: "q4_1212" }
     ]
   },
 
-q3_2a: {
+
+  q3_122: {
   text: "もえとの時間なんてどうでもよかったんだね。",
   next: "dead" 
 },
 
-
-  q4_1a: {
-    text: "ほんとに！？じゃあ７６日前の１３時間４０分前、なんの話してたでしょうか！",
-    options: [
-      { text: "…………", delta: 100, next: "q5_1a" },
-      ]
+ q3_211: {
+    text: "なんでそんな嘘つくの！！",
+    next: "dead" 
   },
 
-q5_1a: {
+  q3_212: {
+  text: "不安にさせるきみ君が悪いんじゃん！！もえだってこんなことしたくないのに！！",
+  next: "dead" 
+},
+
+ q3_221: {
+    text: "…言い訳もできないの？",
+    next: "dead" 
+  },
+
+  q3_222: {
+  text: "わかった。まさきくんが悪いんだね。",
+  next: "clear?" 
+},
+
+  q4_1212: {
+    text: "ほんとに！？じゃあ７６日前の１３時間４０分前、なんの話してたでしょうか！",
+    options: [
+      { text: "…………", delta: 100, next: "q5_12121" },
+      ]
+  },
+  
+  q5_12121: {
   text: "もえ嘘つく人きらい。",
   next: "dead" 
 },
@@ -119,7 +162,7 @@ q5_1a: {
   
   clear: "CLEAR",
   clearMaybe: "CLEAR？",
-  dead: "YOU DEAD"
+  dead: "YOU DIED4"
 };
 
 function startGame() {
@@ -179,7 +222,7 @@ btn.onclick = () => {
 
             setTimeout(() => {
               redFlash.style.display = "none";
-              showEnd("YOU DEAD", "殺された", 0);
+              showEnd("YOU DIED3", "殺された", 0);
             }, 50);
 
           }, 750);
@@ -193,7 +236,7 @@ btn.onclick = () => {
 
       setTimeout(() => {
         redFlash.style.display = "none";
-        showEnd("YOU DEAD", "殺された", 0);
+        showEnd("YOU DIED2", "殺された", 0);
       }, 700);
     }
   } else {
@@ -240,7 +283,7 @@ function handleNext(nextId) {
       redFlash.style.display = "block";
       setTimeout(() => {
         redFlash.style.display = "none";
-        showEnd("YOU DEAD", "殺された", 0);
+        showEnd("YOU DIED1", "殺された", 0);
       }, 700);
     } else if (nextId === "clear") {
       setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
