@@ -321,6 +321,8 @@ function updateMeter() {
 }
 
 
+
+
 function showInputPrompt(node) { 
    // タイピング表示
   message.textContent = "";
@@ -380,7 +382,6 @@ function showInputPrompt(node) {
   choices.appendChild(submitBtn);
 }
 
-  
 function showEnd(type, name, id) {
   console.log("showEnd called:", type, name, id);
   gameScreen.classList.add('hidden');
@@ -389,8 +390,6 @@ function showEnd(type, name, id) {
   endName.textContent = name;
   seenEnds[id] = true;
 }
-
-
 
 
 startBtn.onclick = startGame;
