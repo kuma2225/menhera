@@ -26,7 +26,7 @@ const story = {
   start: {
     text: "おかえり、遅かったね。",
     options: [
-      { text: "ただいま", delta: 40, next: "q1_1" },
+      { text: "ただいま", delta: 20, next: "q1_1" },
       { text: "ごめんね、まさきを家まで送ってて", delta: 10, next: "q1_2" },
       { text: "んー大好きだよみーちゃん♡", delta: 60, next: "q1_3" }
     ]
@@ -36,7 +36,7 @@ const story = {
     text: "それだけ？他に言うことないの？",
     options: [
       { text: "これ、お土産。", delta: -10, next: "q2_11" },
-      { text: "大好きだよ。", delta: 5, next: "q2_12" }
+      { text: "大好きだよ。", delta: 40, next: "q2_12" }
     ]
   },
 
@@ -59,8 +59,8 @@ const story = {
   q2_11: {
     text: "…ケーキ？",
     options: [
-      { text: "今日で付き合って178日記念。", delta: -10, next: "q3_111" },
-      { text: "遅くなっちゃったからさ。", delta: 5, next: "q3_112" }
+      { text: "今日で付き合って178日記念。", delta: 100, next: "q3_111" },
+      { text: "遅くなっちゃったからさ。", delta: 80, next: "q3_112" }
     ]
   },
 
@@ -115,8 +115,8 @@ const story = {
    q3_121: {
     text: "覚えててくれたの…？",
     options: [
-      { text: "もちろんだよ。", delta: -100, next: "q4_1211" },
-      { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -100, next: "q4_1212" }
+      { text: "もちろんだよ。", delta: 0, next: "q4_1211" },
+      { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -10, next: "q4_1212" }
     ]
   },
 
@@ -280,40 +280,45 @@ function updateMeter() {
   }
 }
 
-function handleNext(nextId) {
+  function handleNext(nextId) {
   const node = story[nextId];
 
   if (!node || typeof node === 'string') {
-    // 文字列だけならエンド判定
+    // エンド判定はそのまま
     if (nextId === "dead") {
       const redFlash = document.getElementById("redFlash");
       redFlash.style.display = "block";
       setTimeout(() => {
         redFlash.style.display = "none";
-        showEnd("YOU DIED1", "殺された", 0);
+        showEnd("YOU DIED", "殺された", 0);
       }, 700);
     } else if (nextId === "clear") {
       setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
     } else if (nextId === "clearMaybe") {
       setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
     }
-    return;  // 処理をここで止める
+    return;
   }
 
   currentNode = node;
+
+  // ここを追加！ 👇
+  if (node.image) {
+    girl.src = node.image;
+  }
 
   if (currentNode.type === "input") {
     showInputPrompt(currentNode);
   } else {
     showMessage(currentNode.text, currentNode.options || []);
+    
+    // メッセージだけで options がない場合、自動で次に進める
     if ((!currentNode.options || currentNode.options.length === 0) && currentNode.next) {
-      const waitTime = 1000 + currentNode.text.length * 30;
+      const waitTime = currentNode.delay || (1000 + currentNode.text.length * 30);
       setTimeout(() => handleNext(currentNode.next), waitTime);
     }
   }
 }
-
-
 
 
 function showInputPrompt(node) { 
