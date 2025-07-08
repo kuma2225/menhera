@@ -115,7 +115,7 @@ const story = {
    q3_121: {
     text: "覚えててくれたの…？",
     options: [
-      { text: "もちろんだよ。", delta: -100, next: "clear" },
+      { text: "もちろんだよ。", delta: -100, next: "q4_1211" },
       { text: "もえみと過ごした時間１分１秒たりともわすれるわけないだろ。", delta: -100, next: "q4_1212" }
     ]
   },
@@ -152,6 +152,13 @@ const story = {
       { text: "…………", delta: 100, next: "q5_12121" },
       ]
   },
+  
+  q4_1211: {
+  text: "……♡",
+  next: "clear",
+  image: "images/menhera4.png",
+  delay: 2000
+},
   
   q5_12121: {
   text: "もえ嘘つく人きらい。",

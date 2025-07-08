@@ -373,7 +373,6 @@ h1 {
   display: none;
 }
 
-
 /* ダブルタップズーム防止 */
 body {
   touch-action: manipulation;
