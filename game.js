@@ -36,7 +36,7 @@ const story = {
     text: "それだけ？他に言うことないの？",
     options: [
       { text: "これ、お土産。", delta: -10, next: "q2_11" },
-      { text: "大好きだよ。", delta: 40, next: "q2_12" }
+      { text: "大好きだよ。", delta: 20, next: "q2_12" }
     ]
   },
 
@@ -143,7 +143,7 @@ const story = {
 
   q3_222: {
   text: "わかった。まさきくんが悪いんだね。",
-  next: "clear?" 
+  next: "clearMaybe" 
 },
 
   q4_1212: {
@@ -168,8 +168,8 @@ const story = {
 
   
   clear: "CLEAR",
-  clearMaybe: "CLEAR？",
-  dead: "YOU DIED4"
+  clearMaybe: "CLEAR?",
+  dead: "YOU DIED"
 };
 
 function startGame() {
@@ -229,7 +229,7 @@ btn.onclick = () => {
 
             setTimeout(() => {
               redFlash.style.display = "none";
-              showEnd("YOU DIED3", "殺された", 0);
+              showEnd("YOU DIED", "殺された", 0);
             }, 50);
 
           }, 750);
@@ -243,7 +243,7 @@ btn.onclick = () => {
 
       setTimeout(() => {
         redFlash.style.display = "none";
-        showEnd("YOU DIED2", "殺された", 0);
+        showEnd("YOU DIE", "殺された", 0);
       }, 700);
     }
   } else {
@@ -251,8 +251,6 @@ btn.onclick = () => {
     handleNext(nextId);
   }
 };
-
-
 
     choices.appendChild(btn);
   });
@@ -284,25 +282,25 @@ function updateMeter() {
   const node = story[nextId];
 
   if (!node || typeof node === 'string') {
-    // エンド判定はそのまま
+    // エンド判定
     if (nextId === "dead") {
-      const redFlash = document.getElementById("redFlash");
-      redFlash.style.display = "block";
-      setTimeout(() => {
-        redFlash.style.display = "none";
-        showEnd("YOU DIED", "殺された", 0);
-      }, 700);
-    } else if (nextId === "clear") {
-      setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
-    } else if (nextId === "clearMaybe") {
-      setTimeout(() => showEnd("CLEAR？", "なんとかごまかせた…", 2), 650);
-    }
+  const redFlash = document.getElementById("redFlash");
+  redFlash.style.display = "block";
+  setTimeout(() => {
+    redFlash.style.display = "none";
+    showEnd("YOU DIED", "殺された", 0);
+  }, 700);
+} else if (nextId === "clear") {
+  setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
+} else if (nextId === "clearMaybe") {
+  showEnd("CLEAR?", "オレは助かった…", 2);  // ← 他と同じ形に統一
+}
+
     return;
   }
 
   currentNode = node;
 
-  // ここを追加！ 👇
   if (node.image) {
     girl.src = node.image;
   }
@@ -311,16 +309,13 @@ function updateMeter() {
     showInputPrompt(currentNode);
   } else {
     showMessage(currentNode.text, currentNode.options || []);
-    
-    // メッセージだけで options がない場合、自動で次に進める
+
     if ((!currentNode.options || currentNode.options.length === 0) && currentNode.next) {
       const waitTime = currentNode.delay || (1000 + currentNode.text.length * 30);
       setTimeout(() => handleNext(currentNode.next), waitTime);
     }
   }
 }
-
-
 
 
 function showInputPrompt(node) { 
