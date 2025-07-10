@@ -94,22 +94,28 @@ const story = {
 
   q2_31: {
     text: "そんな言い訳でいけると思った？",
-    next: "dead"
+    next: "dead",
+    deathMessage: "みーちゃんってだれ？"
   },
 
     q2_32: {
     text: "なんも大丈夫じゃねーよ",
-    next: "dead"
+    next: "dead",
+    deathMessage: "全然だいじょばない♪"
+
   },
 
   q3_111: {
   text: "189日だよ。もえとの11日どうでもよかったんだね。",
-  next: "dead" 
+  next: "dead",
+  deathMessage: "記念日は大切に"
+
 },
 
   q3_112: {
     text: "…覚えてないんだ。もえとの記念日。",
-    next: "dead" 
+    next: "dead",
+    deathMessage: "ケーキはうれしいけどね"
   },
 
    q3_121: {
@@ -123,27 +129,31 @@ const story = {
 
   q3_122: {
   text: "もえとの時間なんてどうでもよかったんだね。",
-  next: "dead" 
+  next: "dead",
+  deathMessage: "なんで覚えてないの？"
 },
 
  q3_211: {
     text: "なんでそんな嘘つくの！！",
-    next: "dead" 
+    next: "dead",
+    deathMessage: "うそつき"
   },
 
   q3_212: {
   text: "不安にさせるきみ君が悪いんじゃん！！もえだってこんなことしたくないのに！！",
-  next: "dead" 
+  next: "dead",
+  deathMessage: "きみが悪い" 
 },
 
  q3_221: {
     text: "…言い訳もできないの？",
-    next: "dead" 
+    next: "dead",
+    deathMessage: "もちろん見てるよ鍵垢も"
   },
 
   q3_222: {
   text: "わかった。まさきくんが悪いんだね。",
-  next: "clearMaybe" 
+  next: "clearMaybe"
 },
 
   q4_1212: {
@@ -162,7 +172,8 @@ const story = {
   
   q5_12121: {
   text: "もえ嘘つく人きらい。",
-  next: "dead" 
+  next: "dead",
+  deathMessage: "嘘はよくないよ"
 },
 
 
@@ -278,28 +289,30 @@ function updateMeter() {
   }
 }
 
-  function handleNext(nextId) {
+function handleNext(nextId) {
   const node = story[nextId];
 
   if (!node || typeof node === 'string') {
-    // エンド判定
     if (nextId === "dead") {
-  const redFlash = document.getElementById("redFlash");
-  redFlash.style.display = "block";
-  setTimeout(() => {
-    redFlash.style.display = "none";
-    showEnd("YOU DIED", "殺された", 0);
-  }, 700);
-} else if (nextId === "clear") {
-  setTimeout(() => showEnd("CLEAR", "うまく言い訳できた", 1), 650);
-} else if (nextId === "clearMaybe") {
-  showEnd("CLEAR?", "オレは助かった…", 2);  // ← 他と同じ形に統一
-}
+      const redFlash = document.getElementById("redFlash");
+      redFlash.style.display = "block";
+      setTimeout(() => {
+        redFlash.style.display = "none";
 
+        // 🔑 currentNode から deathMessage を取得
+        let deathMessage = (currentNode && currentNode.deathMessage) ? currentNode.deathMessage : "殺された";
+
+        showEnd("YOU DIED", deathMessage, 0);
+      }, 700);
+    } else if (nextId === "clear") {
+      setTimeout(() => showEnd("CLEAR", "大好きだよ", 1), 650);
+    } else if (nextId === "clearMaybe") {
+      showEnd("CLEAR?", "オレは、助かった", 2);
+    }
     return;
   }
 
-  currentNode = node;
+  currentNode = node;  // ここで currentNode を更新
 
   if (node.image) {
     girl.src = node.image;
@@ -428,7 +441,7 @@ backBtn.addEventListener("click", () => {
 });
 
 function updateEndList() {
-  document.getElementById('end1').textContent = seenEnds[0] ? "YOU DEAD" : "？？？？";
+  document.getElementById('end1').textContent = seenEnds[0] ? "YOU DIED" : "？？？？";
   document.getElementById('end2').textContent = seenEnds[1] ? "CLEAR" : "？？？？";
   document.getElementById('end3').textContent = seenEnds[2] ? "CLEAR？" : "？？？？";
 }
