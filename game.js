@@ -51,16 +51,16 @@ const story = {
   q1_3: {
     text: "みーちゃん？誰よその女！！浮気してたの！？もうもえのこと好きじゃないんだ！！",
     options: [
-      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: -20, next: "q2_31" },
-      { text: "大丈夫。もえみが一番だよ。", delta: 40, next: "q2_32" }
+      { text: "ちがうよ。もえみの”み”でみーちゃん。浮気なんてするわけないじゃん。", delta: 9, next: "q2_31" },
+      { text: "大丈夫。もえみが一番だよ。", delta: 9, next: "q2_32" }
     ]
   },
 
   q2_11: {
     text: "…ケーキ？",
     options: [
-      { text: "今日で付き合って178日記念。", delta: 100, next: "q3_111" },
-      { text: "遅くなっちゃったからさ。", delta: 80, next: "q3_112" }
+      { text: "今日で付き合って178日記念。", delta: 59, next: "q3_111" },
+      { text: "遅くなっちゃったからさ。", delta: 59, next: "q3_112" }
     ]
   },
 
@@ -70,8 +70,8 @@ const story = {
   answer: 189,
   prefix: "付き合って",
   suffix: "日記念でしょ。",
-  delta: -50,
-  deltaWrong: 100,
+  delta: -40,
+  deltaWrong: 59,
   correctNext: "q3_121",
   wrongNext: "q3_122"
 },
@@ -80,14 +80,14 @@ const story = {
     text: "じゃあなんで中百舌鳥に行ってたの？",
     options: [
       { text: "…行ってないよ？", delta: 30, next: "q3_211" },
-      { text: "なんで知ってんの？もう勝手にGPSつけないって言ったよね？", delta: 20, next: "q3_212" }
+      { text: "なんで知ってんの？もう勝手にGPSつけないって言ったよね？", delta: 29, next: "q3_212" }
     ]
   },
 
   q2_22: {
     text: "ふーん…。あとさ、今日の飲み会男の人だけって言ってたよね？…誰この女達？",
     options: [
-      { text: "（なんで鍵垢のツイート見られてんの…）", delta: -20, next: "q3_221" },
+      { text: "（なんで鍵垢のツイート見られてんの…）", delta: 39, next: "q3_221" },
       { text: "まさきが勝手につれてきてさー", delta: 40, next: "q3_222" }
     ]
   },
@@ -101,7 +101,7 @@ const story = {
     q2_32: {
     text: "なんも大丈夫じゃねーよ",
     next: "dead",
-    deathMessage: "全然だいじょばない♪"
+    deathMessage: "全然だいじょばない"
 
   },
 
@@ -115,7 +115,8 @@ const story = {
   q3_112: {
     text: "…覚えてないんだ。もえとの記念日。",
     next: "dead",
-    deathMessage: "ケーキはうれしいけどね"
+    deathMessage: "ケーキはうれしいけど"
+
   },
 
    q3_121: {
@@ -159,7 +160,7 @@ const story = {
   q4_1212: {
     text: "ほんとに！？じゃあ７６日前の１３時間４０分前、なんの話してたでしょうか！",
     options: [
-      { text: "…………", delta: 100, next: "q5_12121" },
+      { text: "…………", delta: 79, next: "q5_12121" },
       ]
   },
   
