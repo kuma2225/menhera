@@ -18,8 +18,9 @@ const infoScreen = document.getElementById("infoScreen");
 const backBtn = document.getElementById("backBtn");
 
 let yamido = 30;
-let seenEnds = [false, false, false];
+let seenEnds = Array(11).fill(null);  
 let currentNode = null;
+
 
 
 const story = {
@@ -303,12 +304,12 @@ function handleNext(nextId) {
         // 🔑 currentNode から deathMessage を取得
         let deathMessage = (currentNode && currentNode.deathMessage) ? currentNode.deathMessage : "殺された";
 
-        showEnd("YOU DIED", deathMessage, 0);
+        showEnd("YOU DIED", deathMessage, 1);
       }, 700);
     } else if (nextId === "clear") {
-      setTimeout(() => showEnd("CLEAR", "大好きだよ", 1), 650);
+      setTimeout(() => showEnd("CLEAR", "大好きだよ", 2), 650);
     } else if (nextId === "clearMaybe") {
-      showEnd("CLEAR?", "オレは、助かった", 2);
+      showEnd("CLEAR?", "オレは、助かった", 3);
     }
     return;
   }
@@ -392,12 +393,22 @@ function showInputPrompt(node) {
 }
 
 function showEnd(type, name, id) {
-  console.log("showEnd called:", type, name, id);
   gameScreen.classList.add('hidden');
   endScreen.classList.remove('hidden');
+
   endType.textContent = type;
   endName.textContent = name;
-  seenEnds[id] = true;
+
+  // --- 修正ポイント ---
+  // deathMessage がまだ登録されていなければ保存
+  if (name && !seenEnds.includes(name)) {
+    const emptyIndex = seenEnds.indexOf(null);
+    if (emptyIndex !== -1) {
+      seenEnds[emptyIndex] = name;
+    }
+  }
+
+  updateEndList();
 }
 
 
@@ -409,14 +420,20 @@ retryBtn.onclick = () => {
   yamido = 30;
   updateMeter();
   handleNext("start"); // 最初のストーリーノードから再開
+
+  // 🔑 エンド記録を再描画（リセットはしない）
+  updateEndList();
 };
+
 
 
 exitBtn.onclick = () => {
   endScreen.classList.add('hidden');
   startScreen.classList.remove('hidden');
-  seenEnds = [false, false, false];
+  // 全エンド記録をリセット（8個分を null に）
+  seenEnds = Array(11).fill(null);
 };
+
 
 endListBtn.onclick = () => {
   gameScreen.classList.add('hidden');
@@ -442,8 +459,10 @@ backBtn.addEventListener("click", () => {
 });
 
 function updateEndList() {
-  document.getElementById('end1').textContent = seenEnds[0] ? "YOU DIED" : "？？？？";
-  document.getElementById('end2').textContent = seenEnds[1] ? "CLEAR" : "？？？？";
-  document.getElementById('end3').textContent = seenEnds[2] ? "CLEAR？" : "？？？？";
+  seenEnds.forEach((msg, index) => {
+    const li = document.getElementById(`end${index + 1}`);
+    li.textContent = msg ? msg : "？？？？";
+  });
 }
+
 
